@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import json
 
 source = requests.get('https://www.astateoftrance.com/episodes/').text
 
@@ -14,7 +15,7 @@ episode_num = ep_title[len(ep_title) - 1]
 source = requests.get(ep_source).text
 soup = BeautifulSoup(source, 'lxml')
 
-song_list = soup.find('ol')
+song_list = soup.find('div', class_='playlist col first w60').ol
 
 ep_songlist = []
 
@@ -43,6 +44,7 @@ for song in song_list.find_all('li'):
 		else:
 			pass
 	
+	print(main_artist)
 	_song = song.text
 
 	#Ensure split on En dash
@@ -68,7 +70,7 @@ for song in song_list.find_all('li'):
 			remix_name = peri[1].replace('Remix)','')
 			remix_name = remix_name.strip()
 		else:
-			pass
+			remix_name = None
 	else:
 		if song_name.find('-') != -1:
 			vs_split = song_name.split('-')
@@ -83,7 +85,5 @@ for song in song_list.find_all('li'):
 	song_details['remix'] = remix_name
 	ep_songlist.append(song_details)
 
-	#print(artist+ ' '+ remove_label(song_name))
-
-#print(song_list.prettify())
+print(ep_songlist)
 
